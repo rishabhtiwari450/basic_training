@@ -1,0 +1,117 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+
+body {
+    background-color: #3E0F8D;
+}
+
+
+.container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 12px;
+}
+
+h1 {
+    text-align: center;
+}
+
+
+
+
+.play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  cursor: pointer;
+  width: 150px;
+  height: 50px;
+  background-image: linear-gradient(to top, #D8D9DB 0%, #fff 80%, #FDFDFD 100%);
+  border-radius: 30px;
+  border: 1px solid #8F9092;
+  transition: all 0.2s ease;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #606060;
+  text-shadow: 0 1px #fff;
+}
+
+.play-btn:hover {
+  box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 3px 3px #CECFD1;
+}
+
+.play-btn:active {
+  box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa;
+}
+
+.play-btn:focus {
+  box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa;
+}
+
+
+
+.option-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+    gap: 12px;
+}
+
+
+.option-btn {
+    padding: 10px 4px;
+    background-color: #FFB900;
+    color: white;
+    font-weight:bold;
+    border-radius: 20px;
+    cursor: pointer;
+
+}
+
+.option-btn:hover {
+    opacity: 0.7;
+}
+
+.quiz-area {
+    background-color: white;
+    width: 100%;
+    max-width: 600px;
+}
+
+.main-content {
+display: flex;
+flex-direction: column;
+gap: 12px;
+width: 100%;
+padding: 12px;
+}
+
+
+
+.info-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+
+}
+
+.info-container > button {
+    padding: 8px;
+    background-color: #3d0f8d42;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.hidden {
+    display: none;
+}
