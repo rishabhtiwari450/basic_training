@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Function</th>
+        <th>Test</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="warning" id="one">
+        <td>secondLargest</td>
+        <td><input class="btn btn-primary" type="button" value="Test" onclick="testSecondLargest()"></td>
+      </tr>
+      <tr class="warning" id="two">
+        <td>calculateFrequency</td>
+        <td><input class="btn btn-primary" type="button" value="Test" onclick="testCalculateFrequency()"></td>
+      </tr>
+      <tr class="warning" id="three">
+        <td>flatten</td>
+        <td><input class="btn btn-primary" type="button" value="Test" onclick="testFlatten()"></td>
+      </tr>
+      <tr class="warning" id="four">
+        <td>unflatten</td>
+        <td><input class="btn btn-primary" type="button" value="Test" onclick="testUnflatten()"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function deepEqual(a, b)
+  {
+    if( (typeof a == 'object' && a != null) &&
+        (typeof b == 'object' && b != null) )
+    {
+       var count = [0,0];
+       for( var key in a) count[0]++;
+       for( var key in b) count[1]++;
+       if( count[0]-count[1] != 0) {return false;}
+       for( var key in a)
+       {
+         if(!(key in b) || !deepEqual(a[key],b[key])) {return false;}
+       }
+       for( var key in b)
+       {
+         if(!(key in a) || !deepEqual(b[key],a[key])) {return false;}
+       }
+       return true;
+    }
+    else
+    {
+       return a === b;
+    }
+  }
+  function test(executor, tests) {
+    for(var testIndx in tests) {
+      if(typeof tests[testIndx].output === "object") {
+        if(!deepEqual(executor(tests[testIndx].input), tests[testIndx].output)) {
+          return false;
+        }
+      }
+      else if(executor(tests[testIndx].input) !== tests[testIndx].output) {
+        return false;
+      }
+    }
+    return true;
+  }
+  function declareFailure(element) {
+    $(element).removeClass("warning");
+    $(element).addClass("danger");
+  }
+  function declareSuccess(element) {
+    $(element).removeClass("danger");
+    $(element).addClass("success");
+  }
+  function testSecondLargest() {
+    declareFailure("#one");
+    if(test(secondLargest, [
+      {
+        input: [3,56,7,32,9,14],
+        output: 32
+      },
+      {
+        input: [21, 87, 91, 31, 97, 59, 8, 83, 27, 23, 76, 72, 31, 91, 65, 77, 84, 27, 56, 59],
+        output: 91
+      },
+      {
+        input: [21, 87, 91, 31, 97, 59, 8, 83, 27, 23, 76, 72, 31, 91, 65, 77, 84, 92, 56, 59],
+        output: 92
+      },
+      {
+        input: [111, 0, 20, 0, 2],
+        output: 20
+      }
+    ]))
+      declareSuccess("#one");
+  }
+  
+  function testCalculateFrequency() {
+    declareFailure("#two");
+    if(test(calculateFrequency, [
+      {
+        input: "dummy",
+        output: { d: 1, u: 1, m: 2, y: 1 }
+      },
+      {
+        input: "dummy text",
+        output: { d: 1, u: 1, m: 2, y: 1, t: 2, e: 1, x: 1 }
+      },
+      {
+        input: "shali is running fast",
+        output: { s: 3, h: 1, a: 2, l: 1, i: 3, r: 1, u: 1, n: 3, g: 1, f: 1, t: 1 }
+      },
+      {
+        input: "u@#d$fkj$#!kds",
+        output: { d: 2, f: 1, j: 1, k: 2, s: 1, u: 1 }
+      }
+    ]))
+      declareSuccess("#two");
+  }
+  function testFlatten() {
+    declareFailure("#three");
+    if(test(flatten, [
+      {
+        input: { "flatJSON": false, "i": { "am": { "not": { "so": { "flat": true, "unflat": false } }, "a": "tree" } }, "dates": [ { "day": 1 }, { "day": 8947 } ] },
+        output: { "flatJSON": false, "i.am.not.so.flat": true, "i.am.not.so.unflat": false, "i.am.a": "tree", "dates.0.day": 1, "dates.1.day": 8947 }
+      }
+    ]))
+      declareSuccess("#three");
+  }
+  function testUnflatten() {
+    declareFailure("#four");
+    if(test(unflatten, [
+      {
+        input: { "flatJSON": false, "i.am.not.so.flat": true, "i.am.not.so.unflat": false, "i.am.a": "tree", "dates.0.day": 1, "dates.1.day": 8947 },
+        output: { "flatJSON": false, "i": { "am": { "not": { "so": { "flat": true, "unflat": false } }, "a": "tree" } }, "dates": [ { "day": 1 }, { "day": 8947 } ] }
+      }
+    ]))
+      declareSuccess("#four");
+  }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
