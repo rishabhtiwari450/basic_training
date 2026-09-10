@@ -1,0 +1,1 @@
+SWAPI Collection: https://www.postman.com/rtiwari-48d41369-886102/workspace/public/collection/57960190-7ad1b26d-83eb-428f-a188-ed6d0adb3a42?action=share&creator=57960190
