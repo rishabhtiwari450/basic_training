@@ -85,18 +85,12 @@ const game = {
 
 const quizArea = document.getElementById('quiz-area');
 const playBtn = document.getElementById('play-btn');
-const timer = document.querySelector('.timer');
+const timer = document.getElementById('timer');
 
 
 function showQuestion() {
 
     playBtn.classList.add("hidden");
-
-    game.timeLeft = 20;
-
-    timer.innerHTML = game.timeLeft;
-    timer.classList.remove('hidden');
-
 
     if (game.step >= game.questions.length) {
         endGame();
@@ -107,6 +101,13 @@ function showQuestion() {
         endGame();
         return;
     }
+
+    game.timeLeft = 20;
+    timer.value = game.timeLeft;
+    timer.max = 20;
+    timer.classList.remove("hidden");
+
+
 
 
     const currentQuestion =
@@ -155,7 +156,7 @@ function showQuestion() {
 
         game.timeLeft--;
 
-        timer.innerHTML = game.timeLeft;
+        timer.value = game.timeLeft;
 
 
         if (game.timeLeft <= 0) {
@@ -163,6 +164,7 @@ function showQuestion() {
             clearInterval(game.timer);
 
             game.step++;
+            game.life--;
 
             showQuestion();
         }
@@ -177,10 +179,22 @@ function endGame() {
 
     timer.classList.add('hidden');
 
+        let resultTitle;
+    let resultMessage;
+
+    if (game.life <= 0) {
+        resultTitle = "Game Over!";
+        resultMessage = "You ran out of lives.";
+    } else {
+        resultTitle = "You Win!";
+        resultMessage = "Congratulations! You completed the quiz.";
+    }
+
     quizArea.innerHTML = `
         <div class="main-content">
-            <h2>Game Over!</h2>
+            <h2>${resultTitle}</h2>
             <h3>Your Score: ${game.score}</h3>
+            <p>${resultMessage}</p>
             <p>You answered ${game.score} questions correctly.</p>
 
             <button id="restart-btn">
