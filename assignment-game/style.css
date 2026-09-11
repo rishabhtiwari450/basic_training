@@ -115,3 +115,16 @@ padding: 12px;
 .hidden {
     display: none;
 }
+
+.continue-btn {
+    padding: 12px;
+    background-color: #3E0F8D;
+    color: white;
+    font-weight: bold;
+}
+
+
+#restart-btn {
+    padding: 12px;
+    font-weight: bold;
+}
