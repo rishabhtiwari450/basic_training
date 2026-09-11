@@ -1,20 +1,15 @@
-function myRandomInts(quantity, max) {
-    const set = new Set();
-
-    while (set.size < quantity) {
-        set.add(Math.floor(Math.random() * max));
-    }
-
-    return [...set];
-}
-
 const game = {
+
     gameSequence: null,
     step: 0,
     score: 0,
     life: 3,
     timer: null,
     timeLeft: 20,
+
+    quizArea: document.getElementById("quiz-area"),
+    playBtn: document.getElementById("play-btn"),
+    timerElement: document.getElementById("timer"),
 
     questions: [
         {
@@ -34,7 +29,12 @@ const game = {
         },
         {
             question: "Who is known as the 'God of Cricket'?",
-            options: ["Virat Kohli", "MS Dhoni", "Sachin Tendulkar", "Rohit Sharma"],
+            options: [
+                "Virat Kohli",
+                "MS Dhoni",
+                "Sachin Tendulkar",
+                "Rohit Sharma"
+            ],
             answer: "Sachin Tendulkar"
         },
         {
@@ -64,7 +64,12 @@ const game = {
         },
         {
             question: "Which player is popularly known as 'Captain Cool'?",
-            options: ["MS Dhoni", "Virat Kohli", "Rohit Sharma", "Kapil Dev"],
+            options: [
+                "MS Dhoni",
+                "Virat Kohli",
+                "Rohit Sharma",
+                "Kapil Dev"
+            ],
             answer: "MS Dhoni"
         },
         {
@@ -74,58 +79,54 @@ const game = {
         }
     ],
 
-    createSequence: function () {
-        this.gameSequence = myRandomInts(
-            this.questions.length,
-            this.questions.length
-        );
-    }
-};
+    init: function () {
+
+        const randomInts = (quantity, max) => {
+
+            const set = new Set();
+
+            while (set.size < quantity) {
+                set.add(Math.floor(Math.random() * max));
+            }
+
+            return [...set];
+        };
 
 
-const quizArea = document.getElementById('quiz-area');
-const playBtn = document.getElementById('play-btn');
-const timer = document.getElementById('timer');
+        const showQuestion = () => {
+
+            this.playBtn.classList.add("hidden");
+
+            if (
+                this.step >= this.questions.length ||
+                this.life <= 0
+            ) {
+                endGame();
+                return;
+            }
+
+            this.timeLeft = 20;
+
+            this.timerElement.value = this.timeLeft;
+            this.timerElement.max = 20;
+            this.timerElement.classList.remove("hidden");
 
 
-function showQuestion() {
-
-    playBtn.classList.add("hidden");
-
-    if (game.step >= game.questions.length) {
-        endGame();
-        return;
-    }
-
-    if (game.life <= 0) {
-        endGame();
-        return;
-    }
-
-    game.timeLeft = 20;
-    timer.value = game.timeLeft;
-    timer.max = 20;
-    timer.classList.remove("hidden");
+            const currentQuestion =
+                this.questions[this.gameSequence[this.step]];
 
 
+            this.quizArea.innerHTML = `
+                <div class="main-content">
 
+                    <div class="info-container">
+                        <button>Score: ${this.score}</button>
+                        <button>Lives: ${this.life}</button>
+                    </div>
 
-    const currentQuestion =
-        game.questions[game.gameSequence[game.step]];
+                    <h3>${currentQuestion.question}</h3>
 
-
-    const quizContent = `
-        <div class="main-content">
-
-            <div class="info-container">
-                <button>Score: ${game.score}</button>
-                <button>Lives: ${game.life}</button>
-            </div>
-
-            <h3>${currentQuestion.question}</h3>
-
-            <div class="option-container">
-
+                <div class="option-container">
                 <button class="option-btn">
                     ${currentQuestion.options[0]}
                 </button>
@@ -141,118 +142,129 @@ function showQuestion() {
                 <button class="option-btn">
                     ${currentQuestion.options[3]}
                 </button>
+                    </div>
 
-            </div>
-
-        </div>
-    `;
-
-
-    quizArea.innerHTML = quizContent;
-
-    clearInterval(game.timer);
-
-    game.timer = setInterval(() => {
-
-        game.timeLeft--;
-
-        timer.value = game.timeLeft;
+                </div>
+            `;
 
 
-        if (game.timeLeft <= 0) {
+            clearInterval(this.timer);
 
-            clearInterval(game.timer);
+            this.timer = setInterval(() => {
 
-            game.step++;
-            game.life--;
+                this.timeLeft--;
+
+                this.timerElement.value = this.timeLeft;
+
+                if (this.timeLeft <= 0) {
+
+                    clearInterval(this.timer);
+
+                    this.step++;
+                    this.life--;
+
+                    showQuestion();
+                }
+
+            }, 1000);
+        };
+
+
+        const endGame = () => {
+
+            clearInterval(this.timer);
+
+            this.timerElement.classList.add("hidden");
+
+
+            const won = this.life > 0;
+
+            this.quizArea.innerHTML = `
+                <div class="main-content">
+
+                    <h2>
+                        ${won ? "You Win!" : "Game Over!"}
+                    </h2>
+
+                    <h3>
+                        Your Score: ${this.score}
+                    </h3>
+
+                    <p>
+                        ${won
+                    ? "Congratulations! You completed the quiz."
+                    : "You ran out of lives."
+                }
+                    </p>
+
+                    <p>
+                        You answered ${this.score} questions correctly.
+                    </p>
+
+                    <button id="restart-btn">
+                        Play Again
+                    </button>
+
+                </div>
+            `;
+
+            this.playBtn.classList.add("hidden");
+        };
+
+
+        const startGame = () => {
+            if (this.questions.length === 0) {
+                alert("No questions available!");
+                return;
+            }
+            this.step = 0;
+            this.score = 0;
+            this.life = 3;
+
+            this.gameSequence = randomInts(
+                this.questions.length,
+                this.questions.length
+            );
 
             showQuestion();
-        }
-
-    }, 1000);
-}
+        };
 
 
-function endGame() {
+        this.playBtn.addEventListener("click", startGame);
 
-    clearInterval(game.timer);
 
-    timer.classList.add('hidden');
+        this.quizArea.addEventListener("click", (e) => {
 
-        let resultTitle;
-    let resultMessage;
+            if (e.target.classList.contains("option-btn")) {
 
-    if (game.life <= 0) {
-        resultTitle = "Game Over!";
-        resultMessage = "You ran out of lives.";
-    } else {
-        resultTitle = "You Win!";
-        resultMessage = "Congratulations! You completed the quiz.";
+                clearInterval(this.timer);
+
+                const currentQuestion =
+                    this.questions[this.gameSequence[this.step]];
+
+                const selectedAnswer =
+                    e.target.textContent.trim();
+
+
+                if (selectedAnswer === currentQuestion.answer) {
+                    this.score++;
+                } else {
+                    this.life--;
+                }
+
+                this.step++;
+
+                showQuestion();
+            }
+
+
+            if (e.target.id === "restart-btn") {
+                startGame();
+            }
+
+        });
+
     }
+};
 
-    quizArea.innerHTML = `
-        <div class="main-content">
-            <h2>${resultTitle}</h2>
-            <h3>Your Score: ${game.score}</h3>
-            <p>${resultMessage}</p>
-            <p>You answered ${game.score} questions correctly.</p>
-
-            <button id="restart-btn">
-                Play Again
-            </button>
-        </div>
-    `;
-
-    playBtn.classList.add("hidden");
-}
-
-
-playBtn.addEventListener('click', () => {
-
-    game.step = 0;
-    game.score = 0;
-    game.life = 3;
-
-    game.createSequence();
-
-    showQuestion();
-});
-
-
-quizArea.addEventListener('click', (e) => {
-
-    if (e.target.classList.contains('option-btn')) {
-
-        clearInterval(game.timer);
-
-
-        const currentQuestion =
-            game.questions[game.gameSequence[game.step]];
-
-
-        if (e.target.innerHTML.trim() === currentQuestion.answer) {
-
-            game.score++;
-
-        } else {
-
-            game.life--;
-        }
-
-        game.step++;
-
-        showQuestion();
-    }
-
-    if (e.target.id === 'restart-btn') {
-
-        game.step = 0;
-        game.score = 0;
-        game.life = 3;
-
-        game.createSequence();
-
-        showQuestion();
-    }
-
-});
+game.init();
